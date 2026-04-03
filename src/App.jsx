@@ -25,16 +25,52 @@ const SERVICES = [
 ];
 
 const PORTFOLIO_ITEMS = [
-  { id: 1,  category: "auto",     aspect: "tall",   gradient: "linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0f2a52 100%)" },
-  { id: 2,  category: "auto",     aspect: "wide",   gradient: "linear-gradient(135deg, #080c18 0%, #0c1222 50%, #10182e 100%)" },
-  { id: 3,  category: "paysage",  aspect: "wide",   gradient: "linear-gradient(135deg, #081818 0%, #0d2a28 50%, #0a2030 100%)" },
-  { id: 4,  category: "paysage",  aspect: "tall",   gradient: "linear-gradient(135deg, #0a1020 0%, #0e1e35 50%, #112540 100%)" },
-  { id: 5,  category: "portrait", aspect: "square", gradient: "linear-gradient(135deg, #14102a 0%, #1a1535 50%, #0f1228 100%)" },
-  { id: 6,  category: "portrait", aspect: "tall",   gradient: "linear-gradient(135deg, #12101e 0%, #1c1830 50%, #100e20 100%)" },
-  { id: 7,  category: "ski",      aspect: "wide",   gradient: "linear-gradient(135deg, #0c1a2e 0%, #102238 50%, #d0dff0 100%)" },
-  { id: 8,  category: "ski",      aspect: "tall",   gradient: "linear-gradient(135deg, #1a2a40 0%, #0d1a2e 50%, #b8d0e8 100%)" },
-  { id: 9,  category: "concert",  aspect: "wide",   gradient: "linear-gradient(135deg, #180c28 0%, #200d30 50%, #0d0c22 100%)" },
-  { id: 10, category: "concert",  aspect: "tall",   gradient: "linear-gradient(135deg, #0e0c20 0%, #1a1035 50%, #120a28 100%)" },
+  // Auto & Moto
+  { id: 1,  category: "auto", src: "/photos/automobile_moto/_DSC0221.jpg" },
+  { id: 2,  category: "auto", src: "/photos/automobile_moto/_DSC4176.jpg" },
+  { id: 3,  category: "auto", src: "/photos/automobile_moto/_DSC4207.jpg" },
+  { id: 4,  category: "auto", src: "/photos/automobile_moto/_DSC9570.jpg" },
+  { id: 5,  category: "auto", src: "/photos/automobile_moto/_DSC1739.jpg" },
+  { id: 6,  category: "auto", src: "/photos/automobile_moto/_DSC3361.jpg" },
+  { id: 7,  category: "auto", src: "/photos/automobile_moto/_DSC4585.jpg" },
+  { id: 8,  category: "auto", src: "/photos/automobile_moto/_DSC8998.jpg" },
+  { id: 9,  category: "auto", src: "/photos/automobile_moto/_DSC9447.jpg" },
+  { id: 10, category: "auto", src: "/photos/automobile_moto/IMG_0977.jpg" },
+  // Paysage
+  { id: 11, category: "paysage", src: "/photos/paysage/_DSC0710.jpg" },
+  { id: 12, category: "paysage", src: "/photos/paysage/_DSC0716.jpg" },
+  { id: 13, category: "paysage", src: "/photos/paysage/_DSC0722.jpg" },
+  { id: 14, category: "paysage", src: "/photos/paysage/_DSC0763.jpg" },
+  { id: 15, category: "paysage", src: "/photos/paysage/_DSC3095.jpg" },
+  { id: 16, category: "paysage", src: "/photos/paysage/_DSC3110.jpg" },
+  { id: 17, category: "paysage", src: "/photos/paysage/_DSC3127.jpg" },
+  { id: 18, category: "paysage", src: "/photos/paysage/_DSC4267.jpg" },
+  { id: 19, category: "paysage", src: "/photos/paysage/IMG_2255.jpg" },
+  // Portrait
+  { id: 20, category: "portrait", src: "/photos/portrait/_DSC0671.jpg" },
+  { id: 21, category: "portrait", src: "/photos/portrait/_DSC1951.jpg" },
+  { id: 22, category: "portrait", src: "/photos/portrait/_DSC1970.jpg" },
+  { id: 23, category: "portrait", src: "/photos/portrait/_DSC2000.jpg" },
+  { id: 24, category: "portrait", src: "/photos/portrait/_DSC3818.jpg" },
+  { id: 25, category: "portrait", src: "/photos/portrait/_DSC3859.jpg" },
+  { id: 26, category: "portrait", src: "/photos/portrait/_DSC3893.jpg" },
+  { id: 27, category: "portrait", src: "/photos/portrait/_DSC3920.jpg" },
+  // Ski
+  { id: 28, category: "ski", src: "/photos/ski/_DSC2099.jpg" },
+  { id: 29, category: "ski", src: "/photos/ski/_DSC2129.jpg" },
+  { id: 30, category: "ski", src: "/photos/ski/_DSC2323.jpg" },
+  { id: 31, category: "ski", src: "/photos/ski/_DSC2383.jpg" },
+  { id: 32, category: "ski", src: "/photos/ski/_DSC2428.jpg" },
+  { id: 33, category: "ski", src: "/photos/ski/_DSC2489.jpg" },
+  { id: 34, category: "ski", src: "/photos/ski/_DSC0710.jpg" },
+  { id: 35, category: "ski", src: "/photos/ski/_DSC0773.jpg" },
+  // Concert
+  { id: 36, category: "concert", src: "/photos/concert/IMG_1255.jpg" },
+  { id: 37, category: "concert", src: "/photos/concert/IMG_1330.jpg" },
+  { id: 38, category: "concert", src: "/photos/concert/IMG_1341.jpg" },
+  { id: 39, category: "concert", src: "/photos/concert/IMG_1387.jpg" },
+  { id: 40, category: "concert", src: "/photos/concert/IMG_1419.jpg" },
+  { id: 41, category: "concert", src: "/photos/concert/IMG_1448.jpg" },
 ];
 
 const CATEGORIES = ["tout", "portrait", "auto", "concert", "ski", "paysage"];
@@ -284,12 +320,12 @@ function PortfolioSection() {
       </Section>
 
       {/* Grille */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "12px" }}>
         {filtered.map((item) => (
           <div key={item.id} style={{
             position: "relative", overflow: "hidden", cursor: "pointer", borderRadius: "16px",
-            aspectRatio: item.aspect === "tall" ? "3/4" : item.aspect === "wide" ? "16/10" : "1/1",
-            background: item.src ? undefined : item.gradient,
+            aspectRatio: "1/1",
+            background: item.src ? "#0e0f1a" : item.gradient,
             transition: "transform 0.45s cubic-bezier(.22,1,.36,1), box-shadow 0.45s",
           }}
           onMouseEnter={(e) => {
