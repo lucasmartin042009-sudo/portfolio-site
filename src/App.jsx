@@ -26,51 +26,51 @@ const SERVICES = [
 
 const PORTFOLIO_ITEMS = [
   // Auto & Moto
-  { id: 1,  category: "auto", src: "/photos/automobile_moto/_DSC0221.jpg" },
-  { id: 2,  category: "auto", src: "/photos/automobile_moto/_DSC4176.jpg" },
-  { id: 3,  category: "auto", src: "/photos/automobile_moto/_DSC4207.jpg" },
-  { id: 4,  category: "auto", src: "/photos/automobile_moto/_DSC9570.jpg" },
-  { id: 5,  category: "auto", src: "/photos/automobile_moto/_DSC1739.jpg" },
-  { id: 6,  category: "auto", src: "/photos/automobile_moto/_DSC3361.jpg" },
-  { id: 7,  category: "auto", src: "/photos/automobile_moto/_DSC4585.jpg" },
-  { id: 8,  category: "auto", src: "/photos/automobile_moto/_DSC8998.jpg" },
-  { id: 9,  category: "auto", src: "/photos/automobile_moto/_DSC9447.jpg" },
-  { id: 10, category: "auto", src: "/photos/automobile_moto/IMG_0977.jpg" },
+  { id: 1,  category: "auto", src: "/photos/automobile_moto/_DSC0221.jpg", o: "p" },
+  { id: 2,  category: "auto", src: "/photos/automobile_moto/_DSC4176.jpg", o: "p" },
+  { id: 3,  category: "auto", src: "/photos/automobile_moto/_DSC4207.jpg", o: "l" },
+  { id: 4,  category: "auto", src: "/photos/automobile_moto/_DSC9570.jpg", o: "l" },
+  { id: 5,  category: "auto", src: "/photos/automobile_moto/_DSC1739.jpg", o: "p" },
+  { id: 6,  category: "auto", src: "/photos/automobile_moto/_DSC3361.jpg", o: "p" },
+  { id: 7,  category: "auto", src: "/photos/automobile_moto/_DSC4585.jpg", o: "l" },
+  { id: 8,  category: "auto", src: "/photos/automobile_moto/_DSC8998.jpg", o: "p" },
+  { id: 9,  category: "auto", src: "/photos/automobile_moto/_DSC9447.jpg", o: "p" },
+  { id: 10, category: "auto", src: "/photos/automobile_moto/IMG_0977.jpg",  o: "p" },
   // Paysage
-  { id: 11, category: "paysage", src: "/photos/paysage/_DSC0710.jpg" },
-  { id: 12, category: "paysage", src: "/photos/paysage/_DSC0716.jpg" },
-  { id: 13, category: "paysage", src: "/photos/paysage/_DSC0722.jpg" },
-  { id: 14, category: "paysage", src: "/photos/paysage/_DSC0763.jpg" },
-  { id: 15, category: "paysage", src: "/photos/paysage/_DSC3095.jpg" },
-  { id: 16, category: "paysage", src: "/photos/paysage/_DSC3110.jpg" },
-  { id: 17, category: "paysage", src: "/photos/paysage/_DSC3127.jpg" },
-  { id: 18, category: "paysage", src: "/photos/paysage/_DSC4267.jpg" },
-  { id: 19, category: "paysage", src: "/photos/paysage/IMG_2255.jpg" },
+  { id: 11, category: "paysage", src: "/photos/paysage/_DSC0710.jpg", o: "l" },
+  { id: 12, category: "paysage", src: "/photos/paysage/_DSC0716.jpg", o: "l" },
+  { id: 13, category: "paysage", src: "/photos/paysage/_DSC0722.jpg", o: "l" },
+  { id: 14, category: "paysage", src: "/photos/paysage/_DSC0763.jpg", o: "p" },
+  { id: 15, category: "paysage", src: "/photos/paysage/_DSC3095.jpg", o: "l" },
+  { id: 16, category: "paysage", src: "/photos/paysage/_DSC3110.jpg", o: "l" },
+  { id: 17, category: "paysage", src: "/photos/paysage/_DSC3127.jpg", o: "p" },
+  { id: 18, category: "paysage", src: "/photos/paysage/_DSC4267.jpg", o: "p" },
+  { id: 19, category: "paysage", src: "/photos/paysage/IMG_2255.jpg",  o: "p" },
   // Portrait
-  { id: 20, category: "portrait", src: "/photos/portrait/_DSC0671.jpg" },
-  { id: 21, category: "portrait", src: "/photos/portrait/_DSC1951.jpg" },
-  { id: 22, category: "portrait", src: "/photos/portrait/_DSC1970.jpg" },
-  { id: 23, category: "portrait", src: "/photos/portrait/_DSC2000.jpg" },
-  { id: 24, category: "portrait", src: "/photos/portrait/_DSC3818.jpg" },
-  { id: 25, category: "portrait", src: "/photos/portrait/_DSC3859.jpg" },
-  { id: 26, category: "portrait", src: "/photos/portrait/_DSC3893.jpg" },
-  { id: 27, category: "portrait", src: "/photos/portrait/_DSC3920.jpg" },
+  { id: 20, category: "portrait", src: "/photos/portrait/_DSC0671.jpg", o: "p" },
+  { id: 21, category: "portrait", src: "/photos/portrait/_DSC1951.jpg", o: "l" },
+  { id: 22, category: "portrait", src: "/photos/portrait/_DSC1970.jpg", o: "p" },
+  { id: 23, category: "portrait", src: "/photos/portrait/_DSC2000.jpg", o: "p" },
+  { id: 24, category: "portrait", src: "/photos/portrait/_DSC3818.jpg", o: "p" },
+  { id: 25, category: "portrait", src: "/photos/portrait/_DSC3859.jpg", o: "p" },
+  { id: 26, category: "portrait", src: "/photos/portrait/_DSC3893.jpg", o: "p" },
+  { id: 27, category: "portrait", src: "/photos/portrait/_DSC3920.jpg", o: "p" },
   // Ski
-  { id: 28, category: "ski", src: "/photos/ski/_DSC2099.jpg" },
-  { id: 29, category: "ski", src: "/photos/ski/_DSC2129.jpg" },
-  { id: 30, category: "ski", src: "/photos/ski/_DSC2323.jpg" },
-  { id: 31, category: "ski", src: "/photos/ski/_DSC2383.jpg" },
-  { id: 32, category: "ski", src: "/photos/ski/_DSC2428.jpg" },
-  { id: 33, category: "ski", src: "/photos/ski/_DSC2489.jpg" },
-  { id: 34, category: "ski", src: "/photos/ski/_DSC0710.jpg" },
-  { id: 35, category: "ski", src: "/photos/ski/_DSC0773.jpg" },
+  { id: 28, category: "ski", src: "/photos/ski/_DSC2099.jpg", o: "p" },
+  { id: 29, category: "ski", src: "/photos/ski/_DSC2129.jpg", o: "p" },
+  { id: 30, category: "ski", src: "/photos/ski/_DSC2323.jpg", o: "p" },
+  { id: 31, category: "ski", src: "/photos/ski/_DSC2383.jpg", o: "p" },
+  { id: 32, category: "ski", src: "/photos/ski/_DSC2428.jpg", o: "p" },
+  { id: 33, category: "ski", src: "/photos/ski/_DSC2489.jpg", o: "p" },
+  { id: 34, category: "ski", src: "/photos/ski/_DSC0710.jpg", o: "l" },
+  { id: 35, category: "ski", src: "/photos/ski/_DSC0773.jpg", o: "p" },
   // Concert
-  { id: 36, category: "concert", src: "/photos/concert/IMG_1255.jpg" },
-  { id: 37, category: "concert", src: "/photos/concert/IMG_1330.jpg" },
-  { id: 38, category: "concert", src: "/photos/concert/IMG_1341.jpg" },
-  { id: 39, category: "concert", src: "/photos/concert/IMG_1387.jpg" },
-  { id: 40, category: "concert", src: "/photos/concert/IMG_1419.jpg" },
-  { id: 41, category: "concert", src: "/photos/concert/IMG_1448.jpg" },
+  { id: 36, category: "concert", src: "/photos/concert/IMG_1255.jpg", o: "p" },
+  { id: 37, category: "concert", src: "/photos/concert/IMG_1330.jpg", o: "p" },
+  { id: 38, category: "concert", src: "/photos/concert/IMG_1341.jpg", o: "p" },
+  { id: 39, category: "concert", src: "/photos/concert/IMG_1387.jpg", o: "p" },
+  { id: 40, category: "concert", src: "/photos/concert/IMG_1419.jpg", o: "p" },
+  { id: 41, category: "concert", src: "/photos/concert/IMG_1448.jpg", o: "p" },
 ];
 
 const CATEGORIES = ["tout", "portrait", "auto", "concert", "ski", "paysage"];
@@ -101,6 +101,98 @@ function Section({ children, delay = 0, style = {} }) {
       ...style,
     }}>
       {children}
+    </div>
+  );
+}
+
+// ── Lightbox ──────────────────────────────────────────────
+function Lightbox({ items, index, onClose, onPrev, onNext }) {
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose, onPrev, onNext]);
+
+  if (index === null) return null;
+  const item = items[index];
+
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, zIndex: 999,
+      background: "rgba(5,6,12,0.96)", backdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      {/* Image */}
+      <img
+        src={item.src}
+        alt=""
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          maxWidth: "90vw", maxHeight: "90vh",
+          borderRadius: "16px",
+          boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
+          objectFit: "contain",
+        }}
+      />
+
+      {/* Fermer */}
+      <button onClick={onClose} style={{
+        position: "fixed", top: "24px", right: "28px",
+        background: "rgba(255,255,255,0.07)", border: "none",
+        color: C.text, fontSize: "22px", width: "44px", height: "44px",
+        borderRadius: "50%", cursor: "pointer", display: "flex",
+        alignItems: "center", justifyContent: "center",
+        transition: "background 0.2s",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
+        ✕
+      </button>
+
+      {/* Précédent */}
+      {index > 0 && (
+        <button onClick={(e) => { e.stopPropagation(); onPrev(); }} style={{
+          position: "fixed", left: "20px", top: "50%", transform: "translateY(-50%)",
+          background: "rgba(255,255,255,0.07)", border: "none",
+          color: C.text, fontSize: "22px", width: "48px", height: "48px",
+          borderRadius: "50%", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background 0.2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
+          ‹
+        </button>
+      )}
+
+      {/* Suivant */}
+      {index < items.length - 1 && (
+        <button onClick={(e) => { e.stopPropagation(); onNext(); }} style={{
+          position: "fixed", right: "20px", top: "50%", transform: "translateY(-50%)",
+          background: "rgba(255,255,255,0.07)", border: "none",
+          color: C.text, fontSize: "22px", width: "48px", height: "48px",
+          borderRadius: "50%", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "background 0.2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
+          ›
+        </button>
+      )}
+
+      {/* Compteur */}
+      <div style={{
+        position: "fixed", bottom: "24px", left: "50%", transform: "translateX(-50%)",
+        fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
+        color: C.textDim, letterSpacing: "2px",
+      }}>
+        {index + 1} / {items.length}
+      </div>
     </div>
   );
 }
@@ -291,10 +383,11 @@ function ServicesSection() {
 // ── Portfolio ─────────────────────────────────────────────
 function PortfolioSection() {
   const [filter, setFilter] = useState("tout");
+  const [lightboxIndex, setLightboxIndex] = useState(null);
   const filtered = filter === "tout" ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter((p) => p.category === filter);
 
   return (
-    <section id="portfolio" style={{ padding: "120px 40px", maxWidth: "1200px", margin: "0 auto" }}>
+    <section id="portfolio" style={{ padding: "120px 40px", maxWidth: "1300px", margin: "0 auto" }}>
       <Section>
         <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "6px", textTransform: "uppercase", color: C.accent, marginBottom: "14px" }}>Portfolio</div>
         <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 400, color: C.text, lineHeight: 1.1, margin: "0 0 40px 0" }}>Travaux récents</h2>
@@ -304,7 +397,7 @@ function PortfolioSection() {
       <Section delay={0.1}>
         <div style={{ display: "flex", gap: "8px", marginBottom: "40px", flexWrap: "wrap" }}>
           {CATEGORIES.map((c) => (
-            <button key={c} onClick={() => setFilter(c)} style={{
+            <button key={c} onClick={() => { setFilter(c); setLightboxIndex(null); }} style={{
               background: filter === c ? C.accentDim : "transparent",
               border: `1.5px solid ${filter === c ? C.accent : C.borderSub}`,
               color: filter === c ? C.accent : C.textDim,
@@ -319,45 +412,61 @@ function PortfolioSection() {
         </div>
       </Section>
 
-      {/* Grille */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "12px" }}>
-        {filtered.map((item) => (
-          <div key={item.id} style={{
-            position: "relative", overflow: "hidden", cursor: "pointer", borderRadius: "16px",
-            aspectRatio: "1/1",
-            background: item.src ? "#0e0f1a" : item.gradient,
-            transition: "transform 0.45s cubic-bezier(.22,1,.36,1), box-shadow 0.45s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "scale(0.97)";
-            e.currentTarget.style.boxShadow = `0 16px 48px rgba(91,156,240,0.15)`;
-            e.currentTarget.querySelector(".overlay").style.opacity = "1";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow = "none";
-            e.currentTarget.querySelector(".overlay").style.opacity = "0";
-          }}>
-            {item.src
-              ? <img src={item.src} alt={CAT_LABELS[item.category]} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-              : (
-                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-                  <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", color: C.textDim }}>✦</div>
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: C.textDim }}>{CAT_LABELS[item.category]}</span>
-                </div>
-              )
-            }
+      {/* Mosaïque */}
+      <div style={{ columns: "3 280px", columnGap: "12px" }}>
+        {filtered.map((item, i) => (
+          <div
+            key={item.id}
+            onClick={() => setLightboxIndex(i)}
+            style={{
+              breakInside: "avoid", marginBottom: "12px",
+              borderRadius: "16px", overflow: "hidden",
+              cursor: "pointer", position: "relative",
+              transition: "transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.35s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(0.985)";
+              e.currentTarget.style.boxShadow = `0 16px 48px rgba(91,156,240,0.18)`;
+              e.currentTarget.querySelector(".overlay").style.opacity = "1";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.querySelector(".overlay").style.opacity = "0";
+            }}
+          >
+            <img
+              src={item.src}
+              alt={CAT_LABELS[item.category]}
+              loading="lazy"
+              style={{ width: "100%", display: "block", borderRadius: "16px" }}
+            />
             <div className="overlay" style={{
               position: "absolute", inset: 0, borderRadius: "16px",
-              background: `rgba(91,156,240,0.07)`,
+              background: "rgba(8,9,15,0.35)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              opacity: 0, transition: "opacity 0.35s",
+              opacity: 0, transition: "opacity 0.3s",
             }}>
-              <div style={{ width: "40px", height: "40px", borderRadius: "50%", border: `1.5px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", color: C.accent }}>+</div>
+              <div style={{
+                width: "44px", height: "44px", borderRadius: "50%",
+                border: `1.5px solid ${C.accent}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "20px", color: C.accent,
+                background: "rgba(8,9,15,0.5)",
+              }}>⤢</div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Lightbox */}
+      <Lightbox
+        items={filtered}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onPrev={() => setLightboxIndex((i) => Math.max(0, i - 1))}
+        onNext={() => setLightboxIndex((i) => Math.min(filtered.length - 1, i + 1))}
+      />
     </section>
   );
 }
