@@ -17,11 +17,11 @@ const C = {
 };
 
 const SERVICES = [
-  { id: "auto",    title: "Automobile & Moto",   desc: "Shootings dynamiques, véhicules en mouvement, contenu réseaux sociaux, annonces.", icon: "◈" },
-  { id: "paysage", title: "Paysage",              desc: "Grands espaces, golden hour, longue exposition, nature et architecture urbaine.",  icon: "▣" },
-  { id: "portrait",title: "Portrait",             desc: "Portraits individuels et corporate, ambiance studio ou en extérieur.",             icon: "◉" },
-  { id: "ski",     title: "Ski & Montagne",       desc: "Action sur les pistes, freestyle, freeride, ambiance station et hors-piste.",      icon: "◇" },
-  { id: "concert", title: "Concert & Événements", desc: "Couverture live, ambiance scène, reportage événementiel, artistes en action.",     icon: "▲" },
+  { id: "portrait",title: "Portrait",             desc: "Photo pro pour LinkedIn, presse kit d'artiste, book personnel — en studio ou en extérieur, selon votre univers.", icon: "◉" },
+  { id: "auto",    title: "Automobile & Moto",    desc: "Mise en valeur de votre véhicule pour une vente, un événement ou vos réseaux. Résultat propre, ambiance soignée.", icon: "◈" },
+  { id: "concert", title: "Concert & Événements", desc: "Couverture complète de votre soirée, concert ou événement — des images que vous pouvez utiliser le lendemain.", icon: "▲" },
+  { id: "ski",     title: "Ski & Montagne",       desc: "Action sur les pistes, freeride ou ambiance station — pour les moniteurs, écoles de ski et passionnés de glisse.", icon: "◇" },
+  { id: "paysage", title: "Paysage",              desc: "Grands espaces, golden hour, longue exposition — une approche artistique avant tout, disponible en tirage.",      icon: "▣" },
 ];
 
 const PORTFOLIO_ITEMS = [
@@ -37,8 +37,8 @@ const PORTFOLIO_ITEMS = [
   { id: 10, category: "concert",  aspect: "tall",   gradient: "linear-gradient(135deg, #0e0c20 0%, #1a1035 50%, #120a28 100%)" },
 ];
 
-const CATEGORIES = ["tout", "auto", "paysage", "portrait", "ski", "concert"];
-const CAT_LABELS  = { tout: "Tout", auto: "Auto & Moto", paysage: "Paysage", portrait: "Portrait", ski: "Ski", concert: "Concert" };
+const CATEGORIES = ["tout", "portrait", "auto", "concert", "ski", "paysage"];
+const CAT_LABELS  = { tout: "Tout", portrait: "Portrait", auto: "Auto & Moto", concert: "Concert", ski: "Ski", paysage: "Paysage" };
 
 const FORMSPREE_ID = "xpwzgkrb";
 
@@ -164,7 +164,7 @@ function Hero() {
           color: C.textMid, lineHeight: 1.8, maxWidth: "440px", margin: "0 auto 48px",
           fontWeight: 300, letterSpacing: "0.3px",
         }}>
-          Auto & Moto · Paysage · Portrait · Ski · Concert
+          Portrait · Auto & Moto · Concert · Ski · Paysage
           <br />Région lémanique
         </p>
 
