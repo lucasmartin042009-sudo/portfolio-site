@@ -3,55 +3,51 @@ import { useState, useEffect, useRef } from "react";
 const SERVICES = [
   {
     id: "auto",
-    title: "Automobile",
-    desc: "Shootings garage, livraisons, contenu réseaux sociaux, annonces véhicules.",
+    title: "Automobile & Moto",
+    desc: "Shootings dynamiques, véhicules en mouvement, contenu réseaux sociaux, annonces.",
     icon: "◈",
   },
   {
-    id: "immo",
-    title: "Immobilier",
-    desc: "Appartements, villas, home staging, architecture intérieure & extérieure.",
+    id: "paysage",
+    title: "Paysage",
+    desc: "Grands espaces, golden hour, longue exposition, nature et architecture urbaine.",
     icon: "▣",
   },
   {
-    id: "food",
-    title: "Restauration",
-    desc: "Photo culinaire, ambiance restaurant, menus visuels, contenu Instagram.",
+    id: "portrait",
+    title: "Portrait",
+    desc: "Portraits individuels et corporate, ambiance studio ou en extérieur.",
     icon: "◉",
   },
   {
-    id: "event",
-    title: "Événementiel",
-    desc: "Couverture d'événements, portraits corporate, reportages sur mesure.",
+    id: "ski",
+    title: "Ski & Montagne",
+    desc: "Action sur les pistes, freestyle, freeride, ambiance station et hors-piste.",
     icon: "◇",
   },
   {
-    id: "artisan",
-    title: "Artisanat & Vignerons",
-    desc: "Mise en valeur de savoir-faire, étiquettes, domaines viticoles.",
-    icon: "◆",
-  },
-  {
-    id: "brand",
-    title: "Contenu de marque",
-    desc: "Identité visuelle, produits, lifestyle, campagnes réseaux sociaux.",
+    id: "concert",
+    title: "Concert & Événements",
+    desc: "Couverture live, ambiance scène, reportage événementiel, artistes en action.",
     icon: "▲",
   },
 ];
 
 const PORTFOLIO_ITEMS = [
-  { id: 1, category: "auto", aspect: "tall", gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" },
-  { id: 2, category: "auto", aspect: "wide", gradient: "linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%)" },
-  { id: 3, category: "immo", aspect: "square", gradient: "linear-gradient(135deg, #2d1b30 0%, #1a1a2e 50%, #16213e 100%)" },
-  { id: 4, category: "food", aspect: "tall", gradient: "linear-gradient(135deg, #1e1e1e 0%, #2a1f1f 50%, #3a2828 100%)" },
-  { id: 5, category: "artisan", aspect: "wide", gradient: "linear-gradient(135deg, #1a2e1a 0%, #1e2e1e 50%, #2a3a2a 100%)" },
-  { id: 6, category: "auto", aspect: "square", gradient: "linear-gradient(135deg, #1a1a2e 0%, #0d1117 50%, #161b22 100%)" },
-  { id: 7, category: "event", aspect: "wide", gradient: "linear-gradient(135deg, #2e1a1a 0%, #1a1a2e 50%, #1a2e2e 100%)" },
-  { id: 8, category: "brand", aspect: "tall", gradient: "linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a2e 100%)" },
+  { id: 1,  category: "auto",    aspect: "tall",   gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" },
+  { id: 2,  category: "auto",    aspect: "wide",   gradient: "linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%)" },
+  { id: 3,  category: "paysage", aspect: "wide",   gradient: "linear-gradient(135deg, #0d1b0d 0%, #1a2e1a 50%, #2a3a2a 100%)" },
+  { id: 4,  category: "paysage", aspect: "tall",   gradient: "linear-gradient(135deg, #0d1a2e 0%, #1a2e3a 50%, #0d2030 100%)" },
+  { id: 5,  category: "portrait",aspect: "square", gradient: "linear-gradient(135deg, #2d1b30 0%, #1a1a2e 50%, #16213e 100%)" },
+  { id: 6,  category: "portrait",aspect: "tall",   gradient: "linear-gradient(135deg, #1e1212 0%, #2a1a1a 50%, #1a1010 100%)" },
+  { id: 7,  category: "ski",     aspect: "wide",   gradient: "linear-gradient(135deg, #0d1a2e 0%, #1a2a3a 50%, #e8f0f8 100%)" },
+  { id: 8,  category: "ski",     aspect: "tall",   gradient: "linear-gradient(135deg, #1a2a3a 0%, #0d1a2e 50%, #c8d8e8 100%)" },
+  { id: 9,  category: "concert", aspect: "wide",   gradient: "linear-gradient(135deg, #2e1a0d 0%, #3a1a1a 50%, #1a0d2e 100%)" },
+  { id: 10, category: "concert", aspect: "tall",   gradient: "linear-gradient(135deg, #1a0d2e 0%, #2e1a3a 50%, #0d0d1a 100%)" },
 ];
 
-const CATEGORIES = ["tout", "auto", "immo", "food", "event", "artisan", "brand"];
-const CAT_LABELS = { tout: "Tout", auto: "Auto", immo: "Immo", food: "Food", event: "Event", artisan: "Artisan", brand: "Brand" };
+const CATEGORIES = ["tout", "auto", "paysage", "portrait", "ski", "concert"];
+const CAT_LABELS = { tout: "Tout", auto: "Auto & Moto", paysage: "Paysage", portrait: "Portrait", ski: "Ski", concert: "Concert" };
 
 // ── Remplacez cette valeur par votre ID Formspree ──
 // Créez un compte gratuit sur https://formspree.io et collez ici l'ID de votre formulaire
@@ -202,9 +198,9 @@ function Hero() {
           maxWidth: "480px", margin: "0 auto 48px",
           fontWeight: 300, letterSpacing: "0.5px",
         }}>
-          Automobile · Immobilier · Restauration · Artisanat
+          Auto & Moto · Paysage · Portrait · Ski · Concert
           <br />
-          Nyon — Lausanne — Genève
+          Région lémanique
         </p>
 
         <div style={{
