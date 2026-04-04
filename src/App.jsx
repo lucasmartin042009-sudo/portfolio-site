@@ -232,7 +232,7 @@ function Navbar() {
       </div>
 
       {/* Links */}
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+      <div className="nav-links" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         {[{ label: "Services", id: "services" }, { label: "Portfolio", id: "portfolio" }, { label: "Contact", id: "contact" }].map((item) => (
           <button key={item.id} onClick={() => scroll(item.id)} style={{
             background: "none", border: "none", cursor: "pointer",
@@ -413,7 +413,7 @@ function PortfolioSection() {
       </Section>
 
       {/* Mosaïque */}
-      <div style={{ columns: "3 280px", columnGap: "12px" }}>
+      <div className="mosaic" style={{ columns: "3 280px", columnGap: "12px" }}>
         {filtered.map((item, i) => (
           <div
             key={item.id}
@@ -476,15 +476,15 @@ function ContactSection() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "", service: "" });
   const [status, setStatus] = useState("idle");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); setStatus("sending");
-    try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(formData),
-      });
-      setStatus(res.ok ? "success" : "error");
-    } catch { setStatus("error"); }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const serviceLabel = SERVICES.find(s => s.id === formData.service)?.title || formData.service;
+    const subject = encodeURIComponent(`[Portfolio] ${serviceLabel} — ${formData.name}`);
+    const body = encodeURIComponent(
+      `Nom : ${formData.name}\nEmail : ${formData.email}\nService : ${serviceLabel}\n\nMessage :\n${formData.message}`
+    );
+    window.location.href = `mailto:lcs.mrt@icloud.com?subject=${subject}&body=${body}`;
+    setStatus("success");
   };
 
   const inputStyle = {
@@ -505,7 +505,7 @@ function ContactSection() {
       </Section>
 
       <Section delay={0.15}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px" }}>
+        <div id="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px" }}>
           {/* Formulaire */}
           <div>
             {status === "success" ? (
@@ -632,7 +632,20 @@ export default function Portfolio() {
           50% { opacity: 0.9; transform: scaleY(1.4); }
         }
         @media (max-width: 700px) {
-          #contact-grid { grid-template-columns: 1fr !important; }
+          /* Contact */
+          #contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          /* Sections padding */
+          section { padding-left: 20px !important; padding-right: 20px !important; padding-top: 80px !important; padding-bottom: 80px !important; }
+          /* Nav links cachés */
+          .nav-links { display: none !important; }
+          /* Portfolio colonnes */
+          .mosaic { columns: 2 !important; }
+          /* Footer */
+          footer { padding: 28px 20px !important; flex-direction: column !important; align-items: flex-start !important; }
+        }
+        @media (max-width: 420px) {
+          .mosaic { columns: 1 !important; }
+          h1 { letter-spacing: -1px !important; }
         }
       `}</style>
 
