@@ -200,54 +200,130 @@ function Lightbox({ items, index, onClose, onPrev, onNext }) {
 // ── Navbar ────────────────────────────────────────────────
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", h);
     return () => window.removeEventListener("scroll", h);
   }, []);
-  const scroll = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  const scroll = (id) => {
+    setMenuOpen(false);
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 50);
+  };
+
+  const LINKS = [
+    { label: "Services", id: "services" },
+    { label: "Portfolio", id: "portfolio" },
+    { label: "Contact", id: "contact" },
+  ];
 
   return (
-    <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-      padding: scrolled ? "12px 40px" : "22px 40px",
-      background: scrolled ? "rgba(8,9,15,0.88)" : "transparent",
-      backdropFilter: scrolled ? "blur(24px)" : "none",
-      borderBottom: scrolled ? `1px solid ${C.borderSub}` : "none",
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      transition: "all 0.4s ease",
-    }}>
-      {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => scroll("hero")}>
-        <div style={{
-          width: "36px", height: "36px", borderRadius: "10px",
-          background: C.accentDim, border: `1.5px solid ${C.accent}`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontFamily: "'Playfair Display', Georgia, serif", fontSize: "15px", fontWeight: 700, color: C.accent,
-        }}>L</div>
-        <span style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: "14px",
-          fontWeight: 500, color: C.text, letterSpacing: "2px", textTransform: "uppercase",
-        }}>Lucas</span>
-      </div>
+    <>
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
+        padding: scrolled ? "12px 24px" : "20px 24px",
+        background: scrolled || menuOpen ? "rgba(8,9,15,0.95)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(24px)" : "none",
+        borderBottom: scrolled && !menuOpen ? `1px solid ${C.borderSub}` : "none",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        transition: "all 0.4s ease",
+      }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => scroll("hero")}>
+          <div style={{
+            width: "36px", height: "36px", borderRadius: "10px",
+            background: C.accentDim, border: `1.5px solid ${C.accent}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontFamily: "'Playfair Display', Georgia, serif", fontSize: "15px", fontWeight: 700, color: C.accent,
+          }}>L</div>
+          <span style={{
+            fontFamily: "'DM Sans', sans-serif", fontSize: "14px",
+            fontWeight: 500, color: C.text, letterSpacing: "2px", textTransform: "uppercase",
+          }}>Lucas</span>
+        </div>
 
-      {/* Links */}
-      <div className="nav-links" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        {[{ label: "Services", id: "services" }, { label: "Portfolio", id: "portfolio" }, { label: "Contact", id: "contact" }].map((item) => (
+        {/* Liens desktop */}
+        <div className="nav-links" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          {LINKS.map((item) => (
+            <button key={item.id} onClick={() => scroll(item.id)} style={{
+              background: "none", border: "none", cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
+              letterSpacing: "1.5px", textTransform: "uppercase",
+              color: C.textMid, transition: "color 0.3s",
+              padding: "8px 14px", borderRadius: "100px",
+            }}
+            onMouseEnter={(e) => { e.target.style.color = C.accent; e.target.style.background = C.accentDim; }}
+            onMouseLeave={(e) => { e.target.style.color = C.textMid; e.target.style.background = "none"; }}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Burger mobile */}
+        <button
+          className="burger"
+          onClick={() => setMenuOpen((o) => !o)}
+          style={{
+            display: "none", flexDirection: "column", justifyContent: "center",
+            gap: "5px", background: "none", border: "none", cursor: "pointer",
+            padding: "8px", borderRadius: "10px",
+          }}
+        >
+          <span style={{
+            display: "block", width: "22px", height: "1.5px", background: C.text,
+            transition: "all 0.3s",
+            transform: menuOpen ? "rotate(45deg) translate(4.5px, 4.5px)" : "none",
+          }} />
+          <span style={{
+            display: "block", width: "22px", height: "1.5px", background: C.text,
+            transition: "all 0.3s",
+            opacity: menuOpen ? 0 : 1,
+          }} />
+          <span style={{
+            display: "block", width: "22px", height: "1.5px", background: C.text,
+            transition: "all 0.3s",
+            transform: menuOpen ? "rotate(-45deg) translate(4.5px, -4.5px)" : "none",
+          }} />
+        </button>
+      </nav>
+
+      {/* Menu déroulant mobile */}
+      <div style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 150,
+        background: "rgba(8,9,15,0.97)", backdropFilter: "blur(24px)",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", gap: "12px",
+        height: menuOpen ? "100vh" : "0",
+        overflow: "hidden",
+        transition: "height 0.4s cubic-bezier(.22,1,.36,1)",
+      }}>
+        {LINKS.map((item, i) => (
           <button key={item.id} onClick={() => scroll(item.id)} style={{
             background: "none", border: "none", cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
-            letterSpacing: "1.5px", textTransform: "uppercase",
-            color: C.textMid, transition: "color 0.3s",
-            padding: "8px 14px", borderRadius: "100px",
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(28px, 8vw, 42px)", fontWeight: 400,
+            color: C.text, letterSpacing: "2px",
+            opacity: menuOpen ? 1 : 0,
+            transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+            transition: `opacity 0.4s ease ${0.1 + i * 0.08}s, transform 0.4s ease ${0.1 + i * 0.08}s`,
+            padding: "12px 40px", borderRadius: "16px",
           }}
-          onMouseEnter={(e) => { e.target.style.color = C.accent; e.target.style.background = C.accentDim; }}
-          onMouseLeave={(e) => { e.target.style.color = C.textMid; e.target.style.background = "none"; }}>
+          onMouseEnter={(e) => { e.target.style.color = C.accent; }}
+          onMouseLeave={(e) => { e.target.style.color = C.text; }}>
             {item.label}
           </button>
         ))}
+        <div style={{
+          marginTop: "24px", fontFamily: "'DM Sans', sans-serif",
+          fontSize: "12px", color: C.textDim, letterSpacing: "3px",
+          opacity: menuOpen ? 1 : 0, transition: "opacity 0.4s ease 0.4s",
+        }}>
+          Photographe · Région lémanique
+        </div>
       </div>
-    </nav>
+    </>
   );
 }
 
@@ -632,15 +708,11 @@ export default function Portfolio() {
           50% { opacity: 0.9; transform: scaleY(1.4); }
         }
         @media (max-width: 700px) {
-          /* Contact */
           #contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          /* Sections padding */
           section { padding-left: 20px !important; padding-right: 20px !important; padding-top: 80px !important; padding-bottom: 80px !important; }
-          /* Nav links cachés */
           .nav-links { display: none !important; }
-          /* Portfolio colonnes */
+          .burger { display: flex !important; }
           .mosaic { columns: 2 !important; }
-          /* Footer */
           footer { padding: 28px 20px !important; flex-direction: column !important; align-items: flex-start !important; }
         }
         @media (max-width: 420px) {
