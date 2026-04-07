@@ -559,7 +559,12 @@ function ContactSection() {
     const body = encodeURIComponent(
       `Nom : ${formData.name}\nEmail : ${formData.email}\nService : ${serviceLabel}\n\nMessage :\n${formData.message}`
     );
-    window.location.href = `mailto:lcs.mrt@icloud.com?subject=${subject}&body=${body}`;
+    const a = document.createElement("a");
+    a.href = `mailto:lcs.mrt@icloud.com?subject=${subject}&body=${body}`;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setStatus("success");
   };
 
@@ -585,10 +590,16 @@ function ContactSection() {
           {/* Formulaire */}
           <div>
             {status === "success" ? (
-              <div style={{ padding: "48px", background: C.bgCard, borderRadius: "20px", border: `1px solid ${C.border}`, textAlign: "center" }}>
+              <div style={{ padding: "40px 32px", background: C.bgCard, borderRadius: "20px", border: `1px solid ${C.border}`, textAlign: "center" }}>
                 <div style={{ fontSize: "28px", marginBottom: "14px", color: C.accent }}>✓</div>
-                <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "20px", color: C.text, margin: "0 0 8px 0" }}>Message envoyé</p>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.textMid }}>Je vous recontacte très vite.</p>
+                <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "20px", color: C.text, margin: "0 0 12px 0" }}>App Mail ouverte</p>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.textMid, lineHeight: 1.7, margin: "0 0 20px 0" }}>
+                  Votre message est prêt dans votre app Mail — il suffit d'appuyer sur Envoyer.
+                </p>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: C.textDim, lineHeight: 1.7 }}>
+                  Si rien ne s'est ouvert, écrivez directement à<br />
+                  <a href="mailto:lcs.mrt@icloud.com" style={{ color: C.accent, textDecoration: "none" }}>lcs.mrt@icloud.com</a>
+                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
