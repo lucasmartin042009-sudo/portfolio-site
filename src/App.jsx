@@ -92,7 +92,7 @@ const CATEGORIES = [
   { id: "paysage", label: "Paysage" },
 ];
 
-const HERO_VIDEO = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4";
+const HERO_PHOTO = "/photos/paysage/_DSC3110.jpg";
 const STATS_VIDEO = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
 const CTA_VIDEO   = "https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8";
 const FORMSPREE_ID = "xpwzgkrb";
@@ -224,17 +224,13 @@ function Navbar() {
 function Hero() {
   return (
     <section className="relative overflow-hidden" style={{ height: "100vh", minHeight: 700 }}>
-      {/* Video background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
+      {/* Photo background */}
+      <img
+        src={HERO_PHOTO}
+        alt="Hero"
         className="absolute left-0 w-full h-full object-cover z-0"
         style={{ top: 0 }}
-      >
-        <source src={HERO_VIDEO} type="video/mp4" />
-      </video>
+      />
 
       {/* Overlays */}
       <div className="absolute inset-0 bg-black/40 z-0" />
