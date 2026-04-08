@@ -92,7 +92,7 @@ const CATEGORIES = [
   { id: "paysage", label: "Paysage" },
 ];
 
-const HERO_PHOTO = "/photos/paysage/_DSC0710.jpg";
+const HERO_PHOTO = "/photos/automobile_moto/_DSC9570.jpg";
 const STATS_VIDEO = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
 const CTA_VIDEO   = "https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8";
 const FORMSPREE_ID = "xpwzgkrb";
@@ -202,7 +202,9 @@ function Navbar() {
         ))}
         <button
           onClick={() => scrollTo("contact")}
-          className="flex items-center gap-1.5 bg-white text-black rounded-full px-4 py-1.5 text-sm font-body font-medium hover:bg-white/90 transition-colors"
+          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-body font-medium transition-colors" style={{ background: "var(--gold)", color: "#000" }}
+            onMouseEnter={e => e.currentTarget.style.background = "var(--gold-light)"}
+            onMouseLeave={e => e.currentTarget.style.background = "var(--gold)"}
         >
           Me contacter <ArrowUpRight size={14} />
         </button>
@@ -246,7 +248,7 @@ function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-xs font-body font-medium tracking-[4px] uppercase text-white/50 mb-6"
+          className="text-xs font-body font-medium tracking-[4px] uppercase mb-6" style={{ color: "var(--gold)" }}
         >
           Photographe & Vidéaste · Nyon
         </motion.p>
@@ -382,9 +384,10 @@ function PortfolioGallery() {
             onClick={() => setActiveCategory(cat.id)}
             className={`rounded-full px-4 py-2 text-sm font-body font-medium transition-all duration-300 ${
               activeCategory === cat.id
-                ? "bg-white text-black"
+                ? "text-black"
                 : "liquid-glass text-white/70 hover:text-white"
             }`}
+            style={activeCategory === cat.id ? { background: "var(--gold)" } : {}}
           >
             {cat.label}
           </button>
@@ -808,7 +811,7 @@ function CtaFooter() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-body text-white/30"
         >
-          <span>© 2026 Lucas Maret. Tous droits réservés.</span>
+          <span>© 2026 Lucas Martin. Tous droits réservés.</span>
           <div className="flex items-center gap-6">
             <a href="mailto:lcs.mrt@icloud.com" className="hover:text-white/60 transition-colors">
               Email

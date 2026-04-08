@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 :root {
+  --gold: #c4a35a;
+  --gold-light: #d4b36a;
+  --gold-dim: rgba(196,163,90,0.15);
+  --gold-glow: 0 0 24px rgba(196,163,90,0.25);
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
   --card: 0 0% 5%;
