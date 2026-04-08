@@ -1,747 +1,854 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, useInView } from "motion/react";
+import { ArrowUpRight, Mail, Camera, Car, Music, Mountain, X, ChevronLeft, ChevronRight, Send } from "lucide-react";
+import Hls from "hls.js";
 
-// ── Palette ──────────────────────────────────────────────
-const C = {
-  accent:     "#5B9CF0",
-  accentHover:"#78B0FF",
-  accentDim:  "rgba(91,156,240,0.12)",
-  accentGlow: "rgba(91,156,240,0.25)",
-  bg:         "#08090f",
-  bgCard:     "#0e0f1a",
-  bgCardHover:"#131425",
-  text:       "#e4e8f4",
-  textMid:    "rgba(228,232,244,0.55)",
-  textDim:    "rgba(228,232,244,0.28)",
-  border:     "rgba(91,156,240,0.12)",
-  borderSub:  "rgba(228,232,244,0.06)",
-};
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
 const SERVICES = [
-  { id: "portrait",title: "Portrait",             desc: "Photo pro pour LinkedIn, presse kit d'artiste, book personnel — en studio ou en extérieur, selon votre univers.", icon: "◉" },
-  { id: "auto",    title: "Automobile & Moto",    desc: "Mise en valeur de votre véhicule pour une vente, un événement ou vos réseaux. Résultat propre, ambiance soignée.", icon: "◈" },
-  { id: "concert", title: "Concert & Événements", desc: "Couverture complète de votre soirée, concert ou événement — des images que vous pouvez utiliser le lendemain.", icon: "▲" },
-  { id: "ski",     title: "Ski & Montagne",       desc: "Action sur les pistes, freeride ou ambiance station — pour les moniteurs, écoles de ski et passionnés de glisse.", icon: "◇" },
-  { id: "paysage", title: "Paysage",              desc: "Grands espaces, golden hour, longue exposition — une approche artistique avant tout, disponible en tirage.",      icon: "▣" },
+  {
+    id: "auto",
+    title: "Automobile & Moto",
+    desc: "Mise en valeur de votre véhicule pour une vente, un événement ou vos réseaux. Résultat propre, ambiance soignée — chaque courbe capturée sous son meilleur angle.",
+    icon: "◈",
+    tag: "Spécialité",
+  },
+  {
+    id: "portrait",
+    title: "Portrait",
+    desc: "Photo professionnelle pour LinkedIn, press kit d'artiste ou book personnel. En studio ou en extérieur, selon votre univers.",
+    icon: "◉",
+    tag: "Portrait",
+  },
+  {
+    id: "concert",
+    title: "Concert & Événements",
+    desc: "Couverture complète de votre soirée, concert ou événement — des images que vous pouvez utiliser le lendemain.",
+    icon: "▲",
+    tag: "Événements",
+  },
+  {
+    id: "ski",
+    title: "Ski & Montagne",
+    desc: "Action sur les pistes, freeride ou ambiance station. Pour les moniteurs, écoles de ski et passionnés de glisse.",
+    icon: "◇",
+    tag: "Sport",
+  },
+  {
+    id: "paysage",
+    title: "Paysage",
+    desc: "Grands espaces, golden hour, longue exposition. Une approche artistique avant tout, disponible en tirage.",
+    icon: "▣",
+    tag: "Art",
+  },
 ];
 
 const PORTFOLIO_ITEMS = [
-  // Auto & Moto
-  { id: 1,  category: "auto", src: "/photos/automobile_moto/_DSC0221.jpg", o: "p" },
-  { id: 2,  category: "auto", src: "/photos/automobile_moto/_DSC4176.jpg", o: "p" },
-  { id: 3,  category: "auto", src: "/photos/automobile_moto/_DSC4207.jpg", o: "l" },
-  { id: 4,  category: "auto", src: "/photos/automobile_moto/_DSC9570.jpg", o: "l" },
-  { id: 5,  category: "auto", src: "/photos/automobile_moto/_DSC1739.jpg", o: "p" },
-  { id: 6,  category: "auto", src: "/photos/automobile_moto/_DSC3361.jpg", o: "p" },
-  { id: 7,  category: "auto", src: "/photos/automobile_moto/_DSC4585.jpg", o: "l" },
-  { id: 8,  category: "auto", src: "/photos/automobile_moto/_DSC8998.jpg", o: "p" },
-  { id: 9,  category: "auto", src: "/photos/automobile_moto/_DSC9447.jpg", o: "p" },
-  { id: 10, category: "auto", src: "/photos/automobile_moto/IMG_0977.jpg",  o: "p" },
-  // Paysage
-  { id: 11, category: "paysage", src: "/photos/paysage/_DSC0710.jpg", o: "l" },
-  { id: 12, category: "paysage", src: "/photos/paysage/_DSC0716.jpg", o: "l" },
-  { id: 13, category: "paysage", src: "/photos/paysage/_DSC0722.jpg", o: "l" },
-  { id: 14, category: "paysage", src: "/photos/paysage/_DSC0763.jpg", o: "p" },
-  { id: 15, category: "paysage", src: "/photos/paysage/_DSC3095.jpg", o: "l" },
-  { id: 16, category: "paysage", src: "/photos/paysage/_DSC3110.jpg", o: "l" },
-  { id: 17, category: "paysage", src: "/photos/paysage/_DSC3127.jpg", o: "p" },
-  { id: 18, category: "paysage", src: "/photos/paysage/_DSC4267.jpg", o: "p" },
-  { id: 19, category: "paysage", src: "/photos/paysage/IMG_2255.jpg",  o: "p" },
-  // Portrait
-  { id: 20, category: "portrait", src: "/photos/portrait/_DSC0671.jpg", o: "p" },
-  { id: 21, category: "portrait", src: "/photos/portrait/_DSC1951.jpg", o: "l" },
-  { id: 22, category: "portrait", src: "/photos/portrait/_DSC1970.jpg", o: "p" },
-  { id: 23, category: "portrait", src: "/photos/portrait/_DSC2000.jpg", o: "p" },
-  { id: 24, category: "portrait", src: "/photos/portrait/_DSC3818.jpg", o: "p" },
-  { id: 25, category: "portrait", src: "/photos/portrait/_DSC3859.jpg", o: "p" },
-  { id: 26, category: "portrait", src: "/photos/portrait/_DSC3893.jpg", o: "p" },
-  { id: 27, category: "portrait", src: "/photos/portrait/_DSC3920.jpg", o: "p" },
-  // Ski
-  { id: 28, category: "ski", src: "/photos/ski/_DSC2099.jpg", o: "p" },
-  { id: 29, category: "ski", src: "/photos/ski/_DSC2129.jpg", o: "p" },
-  { id: 30, category: "ski", src: "/photos/ski/_DSC2323.jpg", o: "p" },
-  { id: 31, category: "ski", src: "/photos/ski/_DSC2383.jpg", o: "p" },
-  { id: 32, category: "ski", src: "/photos/ski/_DSC2428.jpg", o: "p" },
-  { id: 33, category: "ski", src: "/photos/ski/_DSC2489.jpg", o: "p" },
-  { id: 34, category: "ski", src: "/photos/ski/_DSC0710.jpg", o: "l" },
-  { id: 35, category: "ski", src: "/photos/ski/_DSC0773.jpg", o: "p" },
-  // Concert
-  { id: 36, category: "concert", src: "/photos/concert/IMG_1255.jpg", o: "p" },
-  { id: 37, category: "concert", src: "/photos/concert/IMG_1330.jpg", o: "p" },
-  { id: 38, category: "concert", src: "/photos/concert/IMG_1341.jpg", o: "p" },
-  { id: 39, category: "concert", src: "/photos/concert/IMG_1387.jpg", o: "p" },
-  { id: 40, category: "concert", src: "/photos/concert/IMG_1419.jpg", o: "p" },
-  { id: 41, category: "concert", src: "/photos/concert/IMG_1448.jpg", o: "p" },
+  { id: 1,  category: "auto",    src: "/photos/automobile_moto/_DSC0221.jpg" },
+  { id: 2,  category: "auto",    src: "/photos/automobile_moto/_DSC4176.jpg" },
+  { id: 3,  category: "auto",    src: "/photos/automobile_moto/_DSC4207.jpg" },
+  { id: 4,  category: "auto",    src: "/photos/automobile_moto/_DSC9570.jpg" },
+  { id: 5,  category: "auto",    src: "/photos/automobile_moto/_DSC1739.jpg" },
+  { id: 6,  category: "auto",    src: "/photos/automobile_moto/_DSC3361.jpg" },
+  { id: 7,  category: "auto",    src: "/photos/automobile_moto/_DSC4585.jpg" },
+  { id: 8,  category: "auto",    src: "/photos/automobile_moto/_DSC8998.jpg" },
+  { id: 9,  category: "auto",    src: "/photos/automobile_moto/_DSC9447.jpg" },
+  { id: 10, category: "auto",    src: "/photos/automobile_moto/IMG_0977.jpg" },
+  { id: 11, category: "paysage", src: "/photos/paysage/_DSC0710.jpg" },
+  { id: 12, category: "paysage", src: "/photos/paysage/_DSC0716.jpg" },
+  { id: 13, category: "paysage", src: "/photos/paysage/_DSC0722.jpg" },
+  { id: 14, category: "paysage", src: "/photos/paysage/_DSC0763.jpg" },
+  { id: 15, category: "paysage", src: "/photos/paysage/_DSC3095.jpg" },
+  { id: 16, category: "paysage", src: "/photos/paysage/_DSC3110.jpg" },
+  { id: 17, category: "paysage", src: "/photos/paysage/_DSC3127.jpg" },
+  { id: 18, category: "paysage", src: "/photos/paysage/_DSC4267.jpg" },
+  { id: 19, category: "paysage", src: "/photos/paysage/IMG_2255.jpg" },
+  { id: 20, category: "portrait", src: "/photos/portrait/_DSC0671.jpg" },
+  { id: 21, category: "portrait", src: "/photos/portrait/_DSC1951.jpg" },
+  { id: 22, category: "portrait", src: "/photos/portrait/_DSC1970.jpg" },
+  { id: 23, category: "portrait", src: "/photos/portrait/_DSC2000.jpg" },
+  { id: 24, category: "portrait", src: "/photos/portrait/_DSC3818.jpg" },
+  { id: 25, category: "portrait", src: "/photos/portrait/_DSC3859.jpg" },
+  { id: 26, category: "portrait", src: "/photos/portrait/_DSC3893.jpg" },
+  { id: 27, category: "portrait", src: "/photos/portrait/_DSC3920.jpg" },
+  { id: 28, category: "ski",     src: "/photos/ski/_DSC2428.jpg" },
+  { id: 29, category: "ski",     src: "/photos/ski/_DSC0773.jpg" },
+  { id: 30, category: "ski",     src: "/photos/ski/_DSC2016.jpg" },
+  { id: 31, category: "ski",     src: "/photos/ski/_DSC0759.jpg" },
+  { id: 36, category: "concert", src: "/photos/concert/IMG_1255.jpg" },
+  { id: 37, category: "concert", src: "/photos/concert/IMG_1330.jpg" },
+  { id: 38, category: "concert", src: "/photos/concert/IMG_1341.jpg" },
+  { id: 39, category: "concert", src: "/photos/concert/IMG_1387.jpg" },
+  { id: 40, category: "concert", src: "/photos/concert/IMG_1419.jpg" },
+  { id: 41, category: "concert", src: "/photos/concert/IMG_1448.jpg" },
 ];
 
-const CATEGORIES = ["tout", "portrait", "auto", "concert", "ski", "paysage"];
-const CAT_LABELS  = { tout: "Tout", portrait: "Portrait", auto: "Auto & Moto", concert: "Concert", ski: "Ski", paysage: "Paysage" };
+const CATEGORIES = [
+  { id: "tout", label: "Tout" },
+  { id: "auto", label: "Auto & Moto" },
+  { id: "portrait", label: "Portrait" },
+  { id: "concert", label: "Concert" },
+  { id: "ski", label: "Ski" },
+  { id: "paysage", label: "Paysage" },
+];
 
+const HERO_VIDEO = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4";
+const STATS_VIDEO = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
+const CTA_VIDEO   = "https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8";
 const FORMSPREE_ID = "xpwzgkrb";
 
-// ── Hooks ─────────────────────────────────────────────────
-function useInView(threshold = 0.1) {
+// ─── BLUR TEXT ───────────────────────────────────────────────────────────────
+
+function BlurText({ text, className = "", delay = 100 }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
-
-function Section({ children, delay = 0, style = {} }) {
-  const [ref, visible] = useInView();
-  return (
-    <div ref={ref} style={{
-      opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(36px)",
-      transition: `opacity 0.7s cubic-bezier(.22,1,.36,1) ${delay}s, transform 0.7s cubic-bezier(.22,1,.36,1) ${delay}s`,
-      ...style,
-    }}>
-      {children}
-    </div>
-  );
-}
-
-// ── Lightbox ──────────────────────────────────────────────
-function Lightbox({ items, index, onClose, onPrev, onNext }) {
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "ArrowRight") onNext();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [onClose, onPrev, onNext]);
-
-  if (index === null) return null;
-  const item = items[index];
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -50px 0px" });
+  const words = text.split(" ");
 
   return (
-    <div onClick={onClose} style={{
-      position: "fixed", inset: 0, zIndex: 999,
-      background: "rgba(5,6,12,0.96)", backdropFilter: "blur(12px)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-    }}>
-      {/* Image */}
-      <img
-        src={item.src}
-        alt=""
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: "90vw", maxHeight: "90vh",
-          borderRadius: "16px",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
-          objectFit: "contain",
-        }}
-      />
-
-      {/* Fermer */}
-      <button onClick={onClose} style={{
-        position: "fixed", top: "24px", right: "28px",
-        background: "rgba(255,255,255,0.07)", border: "none",
-        color: C.text, fontSize: "22px", width: "44px", height: "44px",
-        borderRadius: "50%", cursor: "pointer", display: "flex",
-        alignItems: "center", justifyContent: "center",
-        transition: "background 0.2s",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
-      onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
-        ✕
-      </button>
-
-      {/* Précédent */}
-      {index > 0 && (
-        <button onClick={(e) => { e.stopPropagation(); onPrev(); }} style={{
-          position: "fixed", left: "20px", top: "50%", transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.07)", border: "none",
-          color: C.text, fontSize: "22px", width: "48px", height: "48px",
-          borderRadius: "50%", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "background 0.2s",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
-          ‹
-        </button>
-      )}
-
-      {/* Suivant */}
-      {index < items.length - 1 && (
-        <button onClick={(e) => { e.stopPropagation(); onNext(); }} style={{
-          position: "fixed", right: "20px", top: "50%", transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.07)", border: "none",
-          color: C.text, fontSize: "22px", width: "48px", height: "48px",
-          borderRadius: "50%", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "background 0.2s",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = C.accentDim)}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}>
-          ›
-        </button>
-      )}
-
-      {/* Compteur */}
-      <div style={{
-        position: "fixed", bottom: "24px", left: "50%", transform: "translateX(-50%)",
-        fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-        color: C.textDim, letterSpacing: "2px",
-      }}>
-        {index + 1} / {items.length}
-      </div>
-    </div>
-  );
-}
-
-// ── Navbar ────────────────────────────────────────────────
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", h);
-    return () => window.removeEventListener("scroll", h);
-  }, []);
-
-  const scroll = (id) => {
-    setMenuOpen(false);
-    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 50);
-  };
-
-  const LINKS = [
-    { label: "Services", id: "services" },
-    { label: "Portfolio", id: "portfolio" },
-    { label: "Contact", id: "contact" },
-  ];
-
-  return (
-    <>
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
-        padding: scrolled ? "12px 24px" : "20px 24px",
-        background: scrolled || menuOpen ? "rgba(8,9,15,0.95)" : "transparent",
-        backdropFilter: scrolled || menuOpen ? "blur(24px)" : "none",
-        borderBottom: scrolled && !menuOpen ? `1px solid ${C.borderSub}` : "none",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        transition: "all 0.4s ease",
-      }}>
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => scroll("hero")}>
-          <div style={{
-            width: "36px", height: "36px", borderRadius: "10px",
-            background: C.accentDim, border: `1.5px solid ${C.accent}`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontFamily: "'Playfair Display', Georgia, serif", fontSize: "15px", fontWeight: 700, color: C.accent,
-          }}>L</div>
-          <span style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: "14px",
-            fontWeight: 500, color: C.text, letterSpacing: "2px", textTransform: "uppercase",
-          }}>Lucas</span>
-        </div>
-
-        {/* Liens desktop */}
-        <div className="nav-links" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          {LINKS.map((item) => (
-            <button key={item.id} onClick={() => scroll(item.id)} style={{
-              background: "none", border: "none", cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
-              letterSpacing: "1.5px", textTransform: "uppercase",
-              color: C.textMid, transition: "color 0.3s",
-              padding: "8px 14px", borderRadius: "100px",
-            }}
-            onMouseEnter={(e) => { e.target.style.color = C.accent; e.target.style.background = C.accentDim; }}
-            onMouseLeave={(e) => { e.target.style.color = C.textMid; e.target.style.background = "none"; }}>
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Burger mobile */}
-        <button
-          className="burger"
-          onClick={() => setMenuOpen((o) => !o)}
-          style={{
-            display: "none", flexDirection: "column", justifyContent: "center",
-            gap: "5px", background: "none", border: "none", cursor: "pointer",
-            padding: "8px", borderRadius: "10px",
+    <span ref={ref} className={className} style={{ display: "inline" }}>
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          style={{ display: "inline-block", marginRight: "0.25em" }}
+          initial={{ filter: "blur(10px)", opacity: 0, y: 30 }}
+          animate={isInView ? { filter: "blur(0px)", opacity: 1, y: 0 } : {}}
+          transition={{
+            duration: 0.5,
+            delay: i * (delay / 1000),
+            ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <span style={{
-            display: "block", width: "22px", height: "1.5px", background: C.text,
-            transition: "all 0.3s",
-            transform: menuOpen ? "rotate(45deg) translate(4.5px, 4.5px)" : "none",
-          }} />
-          <span style={{
-            display: "block", width: "22px", height: "1.5px", background: C.text,
-            transition: "all 0.3s",
-            opacity: menuOpen ? 0 : 1,
-          }} />
-          <span style={{
-            display: "block", width: "22px", height: "1.5px", background: C.text,
-            transition: "all 0.3s",
-            transform: menuOpen ? "rotate(-45deg) translate(4.5px, -4.5px)" : "none",
-          }} />
-        </button>
-      </nav>
-
-      {/* Menu déroulant mobile */}
-      <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 150,
-        background: "rgba(8,9,15,0.97)", backdropFilter: "blur(24px)",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", gap: "12px",
-        height: menuOpen ? "100vh" : "0",
-        overflow: "hidden",
-        transition: "height 0.4s cubic-bezier(.22,1,.36,1)",
-      }}>
-        {LINKS.map((item, i) => (
-          <button key={item.id} onClick={() => scroll(item.id)} style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "clamp(28px, 8vw, 42px)", fontWeight: 400,
-            color: C.text, letterSpacing: "2px",
-            opacity: menuOpen ? 1 : 0,
-            transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-            transition: `opacity 0.4s ease ${0.1 + i * 0.08}s, transform 0.4s ease ${0.1 + i * 0.08}s`,
-            padding: "12px 40px", borderRadius: "16px",
-          }}
-          onMouseEnter={(e) => { e.target.style.color = C.accent; }}
-          onMouseLeave={(e) => { e.target.style.color = C.text; }}>
-            {item.label}
-          </button>
-        ))}
-        <div style={{
-          marginTop: "24px", fontFamily: "'DM Sans', sans-serif",
-          fontSize: "12px", color: C.textDim, letterSpacing: "3px",
-          opacity: menuOpen ? 1 : 0, transition: "opacity 0.4s ease 0.4s",
-        }}>
-          Photographe · Région lémanique
-        </div>
-      </div>
-    </>
+          {word}
+        </motion.span>
+      ))}
+    </span>
   );
 }
 
-// ── Hero ──────────────────────────────────────────────────
-function Hero() {
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
-  const t = (delay) => ({
-    opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(24px)",
-    transition: `all 0.9s cubic-bezier(.22,1,.36,1) ${delay}s`,
-  });
+// ─── HLS VIDEO ───────────────────────────────────────────────────────────────
+
+function HlsVideo({ src, className = "", style = {} }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+      return () => hls.destroy();
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = src;
+      video.play().catch(() => {});
+    }
+  }, [src]);
 
   return (
-    <section id="hero" style={{
-      minHeight: "100vh", display: "flex", flexDirection: "column",
-      justifyContent: "center", alignItems: "center", position: "relative",
-      overflow: "hidden", padding: "0 24px",
-    }}>
-      {/* Glows */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0,
-        background: `radial-gradient(ellipse 60% 50% at 40% 30%, ${C.accentGlow} 0%, transparent 70%),
-                     radial-gradient(ellipse 40% 40% at 70% 70%, rgba(30,40,80,0.5) 0%, transparent 70%)`,
-      }} />
-      <div style={{ position: "absolute", top: "20%", left: "20%", width: "320px", height: "320px", borderRadius: "50%",
-        background: `radial-gradient(circle, rgba(91,156,240,0.06) 0%, transparent 70%)`,
-        filter: "blur(40px)", zIndex: 0,
-      }} />
+    <video
+      ref={videoRef}
+      autoPlay
+      loop
+      muted
+      playsInline
+      className={className}
+      style={style}
+    />
+  );
+}
 
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: "860px" }}>
-        <div style={{ ...t(0.2), fontFamily: "'DM Sans', sans-serif", fontSize: "11px",
-          letterSpacing: "6px", textTransform: "uppercase", color: C.accent, marginBottom: "24px",
-        }}>
-          Photographe · Région lémanique
-        </div>
+// ─── NAVBAR ──────────────────────────────────────────────────────────────────
 
-        <h1 style={{ ...t(0.38), fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: "clamp(52px, 10vw, 118px)", fontWeight: 400,
-          color: C.text, lineHeight: 0.95, margin: "0 0 24px 0", letterSpacing: "-2px",
-        }}>Lucas</h1>
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
 
-        <p style={{ ...t(0.54), fontFamily: "'DM Sans', sans-serif", fontSize: "15px",
-          color: C.textMid, lineHeight: 1.8, maxWidth: "440px", margin: "0 auto 48px",
-          fontWeight: 300, letterSpacing: "0.3px",
-        }}>
-          Portrait · Auto & Moto · Concert · Ski · Paysage
-          <br />Région lémanique
-        </p>
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-        <div style={{ ...t(0.68), display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-          <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-            style={{
-              background: C.accent, color: "#fff", border: "none",
-              padding: "14px 36px", borderRadius: "100px",
-              fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-              letterSpacing: "2px", textTransform: "uppercase",
-              cursor: "pointer", fontWeight: 600, transition: "all 0.3s",
-              boxShadow: `0 0 24px ${C.accentGlow}`,
-            }}
-            onMouseEnter={(e) => { e.target.style.background = C.accentHover; e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = `0 4px 32px ${C.accentGlow}`; }}
-            onMouseLeave={(e) => { e.target.style.background = C.accent; e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = `0 0 24px ${C.accentGlow}`; }}>
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed top-4 left-0 right-0 z-50 px-6 lg:px-12 py-2 flex items-center justify-between"
+    >
+      {/* Logo */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="font-heading italic text-white text-2xl tracking-tight"
+      >
+        LM
+      </button>
+
+      {/* Center nav pill */}
+      <div className="hidden md:flex liquid-glass rounded-full px-1.5 py-1 items-center gap-1">
+        {["Portfolio", "Services", "À Propos", "Contact"].map((item) => (
+          <button
+            key={item}
+            onClick={() => scrollTo(item.toLowerCase().replace(" ", "").replace("à", "a"))}
+            className="px-3 py-2 text-sm font-body font-medium text-white/80 hover:text-white transition-colors rounded-full"
+          >
+            {item}
+          </button>
+        ))}
+        <button
+          onClick={() => scrollTo("contact")}
+          className="flex items-center gap-1.5 bg-white text-black rounded-full px-4 py-1.5 text-sm font-body font-medium hover:bg-white/90 transition-colors"
+        >
+          Me contacter <ArrowUpRight size={14} />
+        </button>
+      </div>
+
+      {/* Mobile CTA */}
+      <button
+        onClick={() => scrollTo("contact")}
+        className="md:hidden liquid-glass-strong rounded-full px-4 py-2 text-sm font-body font-medium text-white flex items-center gap-1.5"
+      >
+        Contact <ArrowUpRight size={14} />
+      </button>
+    </motion.nav>
+  );
+}
+
+// ─── HERO ────────────────────────────────────────────────────────────────────
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden" style={{ height: "100vh", minHeight: 700 }}>
+      {/* Video background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute left-0 w-full h-full object-cover z-0"
+        style={{ top: 0 }}
+      >
+        <source src={HERO_VIDEO} type="video/mp4" />
+      </video>
+
+      {/* Overlays */}
+      <div className="absolute inset-0 bg-black/40 z-0" />
+      <div
+        className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none"
+        style={{ height: 350, background: "linear-gradient(to bottom, transparent, black)" }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center" style={{ paddingTop: 100 }}>
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 mb-8"
+        >
+          <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-body font-semibold">
+            Nouveau
+          </span>
+          <span className="text-white/80 text-xs font-body pr-2">
+            Photographe basé à Genève
+          </span>
+        </motion.div>
+
+        {/* Heading */}
+        <h1 className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.85] max-w-3xl tracking-[-3px] mb-6">
+          <BlurText text="Capturer l'instant. Révéler l'âme." delay={120} />
+        </h1>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ filter: "blur(10px)", opacity: 0, y: 20 }}
+          animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="text-sm md:text-base text-white/70 font-body font-light leading-relaxed max-w-md mb-10"
+        >
+          Auto, portrait, concert, montagne — chaque image raconte quelque chose.
+          Région lémanique : Genève · Lausanne · Nyon.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ filter: "blur(10px)", opacity: 0, y: 20 }}
+          animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+          className="flex items-center gap-4"
+        >
+          <button
+            onClick={() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })}
+            className="liquid-glass-strong rounded-full px-6 py-3 text-sm font-body font-medium text-white flex items-center gap-2 hover:bg-white/10 transition-colors"
+          >
+            Voir le portfolio <ArrowUpRight size={15} />
+          </button>
+          <button
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="text-white/70 hover:text-white text-sm font-body font-light transition-colors flex items-center gap-2"
+          >
+            <Mail size={15} />
             Me contacter
           </button>
-          <button onClick={() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })}
-            style={{
-              background: "transparent", color: C.text,
-              border: `1.5px solid ${C.border}`, padding: "14px 36px", borderRadius: "100px",
-              fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-              letterSpacing: "2px", textTransform: "uppercase",
-              cursor: "pointer", fontWeight: 400, transition: "all 0.3s",
-            }}
-            onMouseEnter={(e) => { e.target.style.borderColor = C.accent; e.target.style.color = C.accent; e.target.style.background = C.accentDim; }}
-            onMouseLeave={(e) => { e.target.style.borderColor = C.border; e.target.style.color = C.text; e.target.style.background = "transparent"; }}>
-            Voir le portfolio
-          </button>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Scroll indicator */}
-      <div style={{
-        position: "absolute", bottom: "40px", left: "50%", transform: "translateX(-50%)",
-        opacity: loaded ? 0.45 : 0, transition: "opacity 1s ease 1.4s",
-      }}>
-        <div style={{ width: "1px", height: "44px", background: `linear-gradient(to bottom, transparent, ${C.accent})`, animation: "scrollPulse 2s ease infinite" }} />
-      </div>
-    </section>
-  );
-}
-
-// ── Services ──────────────────────────────────────────────
-function ServicesSection() {
-  return (
-    <section id="services" style={{ padding: "120px 40px", maxWidth: "1200px", margin: "0 auto" }}>
-      <Section>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "6px", textTransform: "uppercase", color: C.accent, marginBottom: "14px" }}>Services</div>
-        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 400, color: C.text, lineHeight: 1.1, margin: "0 0 14px 0" }}>Ce que je propose</h2>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: C.textMid, maxWidth: "480px", lineHeight: 1.8, marginBottom: "60px", fontWeight: 300 }}>
-          Des visuels qui racontent une histoire et valorisent votre activité. Chaque projet est abordé avec une approche artistique et un regard personnel.
-        </p>
-      </Section>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-        {SERVICES.map((s, i) => (
-          <Section key={s.id} delay={i * 0.07}>
-            <div style={{
-              padding: "36px 28px", background: C.bgCard, borderRadius: "20px",
-              border: `1px solid ${C.borderSub}`, cursor: "default", transition: "all 0.35s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = C.bgCardHover;
-              e.currentTarget.style.borderColor = C.border;
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = `0 12px 40px rgba(91,156,240,0.08)`;
-              e.currentTarget.querySelector(".svc-icon").style.color = C.accent;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = C.bgCard;
-              e.currentTarget.style.borderColor = C.borderSub;
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.querySelector(".svc-icon").style.color = C.textDim;
-            }}>
-              <div className="svc-icon" style={{ fontSize: "26px", color: C.textDim, marginBottom: "18px", transition: "color 0.35s" }}>{s.icon}</div>
-              <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "19px", fontWeight: 400, color: C.text, margin: "0 0 10px 0" }}>{s.title}</h3>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.textMid, lineHeight: 1.7, margin: 0, fontWeight: 300 }}>{s.desc}</p>
-            </div>
-          </Section>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ── Portfolio ─────────────────────────────────────────────
-function PortfolioSection() {
-  const [filter, setFilter] = useState("tout");
-  const [lightboxIndex, setLightboxIndex] = useState(null);
-  const filtered = filter === "tout" ? PORTFOLIO_ITEMS : PORTFOLIO_ITEMS.filter((p) => p.category === filter);
-
-  return (
-    <section id="portfolio" style={{ padding: "120px 40px", maxWidth: "1300px", margin: "0 auto" }}>
-      <Section>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "6px", textTransform: "uppercase", color: C.accent, marginBottom: "14px" }}>Portfolio</div>
-        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 400, color: C.text, lineHeight: 1.1, margin: "0 0 40px 0" }}>Travaux récents</h2>
-      </Section>
-
-      {/* Filtres */}
-      <Section delay={0.1}>
-        <div style={{ display: "flex", gap: "8px", marginBottom: "40px", flexWrap: "wrap" }}>
-          {CATEGORIES.map((c) => (
-            <button key={c} onClick={() => { setFilter(c); setLightboxIndex(null); }} style={{
-              background: filter === c ? C.accentDim : "transparent",
-              border: `1.5px solid ${filter === c ? C.accent : C.borderSub}`,
-              color: filter === c ? C.accent : C.textDim,
-              padding: "8px 20px", borderRadius: "100px",
-              fontFamily: "'DM Sans', sans-serif", fontSize: "11px",
-              letterSpacing: "1.5px", textTransform: "uppercase",
-              cursor: "pointer", transition: "all 0.25s", fontWeight: filter === c ? 500 : 400,
-            }}>
-              {CAT_LABELS[c]}
-            </button>
+        {/* Categories scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 0.8 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-8"
+        >
+          {["Auto", "Portrait", "Concert", "Ski", "Paysage"].map((cat) => (
+            <span
+              key={cat}
+              className="text-white/40 text-sm font-body font-light tracking-wide hidden md:block"
+            >
+              {cat}
+            </span>
           ))}
-        </div>
-      </Section>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-      {/* Mosaïque */}
-      <div className="mosaic" style={{ columns: "3 280px", columnGap: "12px" }}>
+// ─── PORTFOLIO GALLERY ────────────────────────────────────────────────────────
+
+function PortfolioGallery() {
+  const [activeCategory, setActiveCategory] = useState("tout");
+  const [lightbox, setLightbox] = useState(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -100px 0px" });
+
+  const filtered = activeCategory === "tout"
+    ? PORTFOLIO_ITEMS
+    : PORTFOLIO_ITEMS.filter((p) => p.category === activeCategory);
+
+  const openLightbox = (item) => {
+    const idx = filtered.findIndex((p) => p.id === item.id);
+    setLightbox(idx);
+  };
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+  const prev = useCallback(() => setLightbox((i) => (i - 1 + filtered.length) % filtered.length), [filtered.length]);
+  const next = useCallback(() => setLightbox((i) => (i + 1) % filtered.length), [filtered.length]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeLightbox, prev, next]);
+
+  return (
+    <section id="portfolio" className="py-24 px-6 lg:px-16" ref={ref}>
+      {/* Header */}
+      <div className="text-center mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-body font-medium text-white mb-6"
+        >
+          Portfolio
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-5xl lg:text-6xl font-heading italic text-white tracking-tight leading-[0.9] mb-4"
+        >
+          L'image parle d'elle-même.
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-white/50 font-body font-light text-sm max-w-md mx-auto"
+        >
+          Une sélection de travaux récents, entre automobiles, portraits et grands espaces.
+        </motion.p>
+      </div>
+
+      {/* Category filter */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="flex flex-wrap justify-center gap-2 mb-12"
+      >
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`rounded-full px-4 py-2 text-sm font-body font-medium transition-all duration-300 ${
+              activeCategory === cat.id
+                ? "bg-white text-black"
+                : "liquid-glass text-white/70 hover:text-white"
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </motion.div>
+
+      {/* Grid */}
+      <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
         {filtered.map((item, i) => (
-          <div
+          <motion.div
             key={item.id}
-            onClick={() => setLightboxIndex(i)}
-            style={{
-              breakInside: "avoid", marginBottom: "12px",
-              borderRadius: "16px", overflow: "hidden",
-              cursor: "pointer", position: "relative",
-              transition: "transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.35s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(0.985)";
-              e.currentTarget.style.boxShadow = `0 16px 48px rgba(91,156,240,0.18)`;
-              e.currentTarget.querySelector(".overlay").style.opacity = "1";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.querySelector(".overlay").style.opacity = "0";
-            }}
+            layout
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4, delay: i * 0.03 }}
+            className="break-inside-avoid rounded-xl overflow-hidden cursor-pointer group relative"
+            onClick={() => openLightbox(item)}
           >
             <img
               src={item.src}
-              alt={CAT_LABELS[item.category]}
+              alt=""
               loading="lazy"
-              style={{ width: "100%", display: "block", borderRadius: "16px" }}
+              className="w-full h-auto block transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="overlay" style={{
-              position: "absolute", inset: 0, borderRadius: "16px",
-              background: "rgba(8,9,15,0.35)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              opacity: 0, transition: "opacity 0.3s",
-            }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "50%",
-                border: `1.5px solid ${C.accent}`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "20px", color: C.accent,
-                background: "rgba(8,9,15,0.5)",
-              }}>⤢</div>
-            </div>
-          </div>
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 rounded-xl" />
+          </motion.div>
         ))}
       </div>
 
       {/* Lightbox */}
-      <Lightbox
-        items={filtered}
-        index={lightboxIndex}
-        onClose={() => setLightboxIndex(null)}
-        onPrev={() => setLightboxIndex((i) => Math.max(0, i - 1))}
-        onNext={() => setLightboxIndex((i) => Math.min(filtered.length - 1, i + 1))}
-      />
+      {lightbox !== null && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+          onClick={closeLightbox}
+        >
+          <button
+            onClick={closeLightbox}
+            className="absolute top-6 right-6 liquid-glass rounded-full p-2 text-white/70 hover:text-white transition-colors z-10"
+          >
+            <X size={20} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-4 liquid-glass rounded-full p-3 text-white/70 hover:text-white transition-colors z-10"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-4 liquid-glass rounded-full p-3 text-white/70 hover:text-white transition-colors z-10"
+          >
+            <ChevronRight size={22} />
+          </button>
+          <motion.img
+            key={filtered[lightbox]?.id}
+            src={filtered[lightbox]?.src}
+            alt=""
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-xs font-body">
+            {lightbox + 1} / {filtered.length}
+          </div>
+        </motion.div>
+      )}
     </section>
   );
 }
 
-// ── Contact ───────────────────────────────────────────────
-function ContactSection() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "", service: "" });
-  const [status, setStatus] = useState("idle");
+// ─── SERVICES CHESS ───────────────────────────────────────────────────────────
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const serviceLabel = SERVICES.find(s => s.id === formData.service)?.title || formData.service;
-    const subject = encodeURIComponent(`[Portfolio] ${serviceLabel} — ${formData.name}`);
-    const body = encodeURIComponent(
-      `Nom : ${formData.name}\nEmail : ${formData.email}\nService : ${serviceLabel}\n\nMessage :\n${formData.message}`
-    );
-    const a = document.createElement("a");
-    a.href = `mailto:lcs.mrt@icloud.com?subject=${subject}&body=${body}`;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setStatus("success");
-  };
+function ServicesChess() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
 
-  const inputStyle = {
-    width: "100%", padding: "14px 16px", background: C.bgCard,
-    border: `1.5px solid ${C.borderSub}`, borderRadius: "12px",
-    color: C.text, fontFamily: "'DM Sans', sans-serif",
-    fontSize: "14px", outline: "none", transition: "border-color 0.3s",
-  };
+  const featuredServices = [
+    {
+      ...SERVICES[0], // auto
+      image: "/photos/automobile_moto/_DSC4207.jpg",
+      subtext: "Votre voiture mérite mieux qu'une photo de parking.",
+    },
+    {
+      ...SERVICES[1], // portrait
+      image: "/photos/portrait/_DSC3893.jpg",
+      subtext: "Un regard. Une lumière. Une image qui vous ressemble vraiment.",
+    },
+  ];
 
   return (
-    <section id="contact" style={{ padding: "120px 40px", maxWidth: "900px", margin: "0 auto" }}>
-      <Section>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "6px", textTransform: "uppercase", color: C.accent, marginBottom: "14px" }}>Contact</div>
-        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 400, color: C.text, lineHeight: 1.1, margin: "0 0 14px 0" }}>Discutons de votre projet</h2>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: C.textMid, maxWidth: "480px", lineHeight: 1.8, marginBottom: "48px", fontWeight: 300 }}>
-          Décrivez-moi votre besoin et je vous recontacte sous 24h avec une proposition adaptée.
-        </p>
-      </Section>
+    <section id="services" className="py-24 px-6 lg:px-16" ref={ref}>
+      {/* Header */}
+      <div className="text-center mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-body font-medium text-white mb-6"
+        >
+          Prestations
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-5xl lg:text-6xl font-heading italic text-white tracking-tight leading-[0.9]"
+        >
+          Ce que je fais bien.
+        </motion.h2>
+      </div>
 
-      <Section delay={0.15}>
-        <div id="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px" }}>
-          {/* Formulaire */}
+      {/* Chess rows */}
+      <div className="space-y-16 max-w-5xl mx-auto">
+        {featuredServices.map((service, i) => (
+          <motion.div
+            key={service.id}
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.2 + i * 0.15 }}
+            className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-10 md:gap-16`}
+          >
+            {/* Text */}
+            <div className="flex-1 space-y-6">
+              <span className="liquid-glass rounded-full px-3 py-1 text-xs font-body font-medium text-white/60 inline-block">
+                {service.tag}
+              </span>
+              <h3 className="text-3xl md:text-4xl font-heading italic text-white leading-tight">
+                {service.title}
+              </h3>
+              <p className="text-white/60 font-body font-light text-sm leading-relaxed">
+                {service.desc}
+              </p>
+              <p className="text-white/40 font-body font-light text-xs italic">
+                {service.subtext}
+              </p>
+              <button
+                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                className="liquid-glass-strong rounded-full px-5 py-2.5 text-sm font-body font-medium text-white flex items-center gap-2 hover:bg-white/10 transition-colors w-fit"
+              >
+                Demander un devis <ArrowUpRight size={14} />
+              </button>
+            </div>
+
+            {/* Image */}
+            <div className="flex-1 w-full">
+              <div className="liquid-glass rounded-2xl overflow-hidden">
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="w-full h-64 md:h-80 object-cover"
+                />
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── SERVICES GRID ────────────────────────────────────────────────────────────
+
+function ServicesGrid() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
+
+  const icons = [
+    <Car size={18} />,
+    <Camera size={18} />,
+    <Music size={18} />,
+    <Mountain size={18} />,
+    <Camera size={18} />,
+  ];
+
+  return (
+    <section className="py-16 px-6 lg:px-16" ref={ref}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        {SERVICES.map((service, i) => (
+          <motion.div
+            key={service.id}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+            className="liquid-glass rounded-2xl p-6 space-y-4"
+          >
+            <div className="liquid-glass-strong rounded-full w-10 h-10 flex items-center justify-center text-white">
+              {icons[i]}
+            </div>
+            <h3 className="text-lg font-heading italic text-white">{service.title}</h3>
+            <p className="text-white/50 font-body font-light text-sm leading-relaxed">
+              {service.desc}
+            </p>
+          </motion.div>
+        ))}
+
+        {/* "À Propos" card */}
+        <motion.div
+          id="apropos"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="liquid-glass rounded-2xl p-6 space-y-4 md:col-span-2 lg:col-span-1 flex flex-col justify-between"
+        >
           <div>
-            {status === "success" ? (
-              <div style={{ padding: "40px 32px", background: C.bgCard, borderRadius: "20px", border: `1px solid ${C.border}`, textAlign: "center" }}>
-                <div style={{ fontSize: "28px", marginBottom: "14px", color: C.accent }}>✓</div>
-                <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "20px", color: C.text, margin: "0 0 12px 0" }}>App Mail ouverte</p>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.textMid, lineHeight: 1.7, margin: "0 0 20px 0" }}>
-                  Votre message est prêt dans votre app Mail — il suffit d'appuyer sur Envoyer.
-                </p>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: C.textDim, lineHeight: 1.7 }}>
-                  Si rien ne s'est ouvert, écrivez directement à<br />
-                  <a href="mailto:lcs.mrt@icloud.com" style={{ color: C.accent, textDecoration: "none" }}>lcs.mrt@icloud.com</a>
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {[
-                  { key: "name",  label: "Nom",   type: "text",  placeholder: "Votre nom" },
-                  { key: "email", label: "Email", type: "email", placeholder: "votre@email.ch" },
-                ].map(({ key, label, type, placeholder }) => (
-                  <div key={key}>
-                    <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: C.textDim, display: "block", marginBottom: "6px" }}>{label}</label>
-                    <input type={type} placeholder={placeholder} value={formData[key]} required
-                      onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                      style={inputStyle}
-                      onFocus={(e) => (e.target.style.borderColor = C.accent)}
-                      onBlur={(e) => (e.target.style.borderColor = C.borderSub)} />
-                  </div>
-                ))}
-
-                <div>
-                  <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: C.textDim, display: "block", marginBottom: "6px" }}>Service</label>
-                  <select value={formData.service} onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    style={{ ...inputStyle, cursor: "pointer", color: formData.service ? C.text : C.textDim }}>
-                    <option value="" style={{ background: C.bgCard }}>Choisir un service</option>
-                    {SERVICES.map((s) => <option key={s.id} value={s.id} style={{ background: C.bgCard }}>{s.title}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: C.textDim, display: "block", marginBottom: "6px" }}>Message</label>
-                  <textarea placeholder="Décrivez votre projet..." value={formData.message} required rows={4}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    style={{ ...inputStyle, resize: "vertical" }}
-                    onFocus={(e) => (e.target.style.borderColor = C.accent)}
-                    onBlur={(e) => (e.target.style.borderColor = C.borderSub)} />
-                </div>
-
-                {status === "error" && (
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.accent }}>
-                    Erreur — écrivez directement à lcs.mrt@icloud.com
-                  </p>
-                )}
-
-                <button type="submit" disabled={status === "sending"} style={{
-                  background: C.accent, color: "#fff", border: "none",
-                  padding: "15px 40px", borderRadius: "100px",
-                  fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-                  letterSpacing: "2px", textTransform: "uppercase",
-                  cursor: status === "sending" ? "not-allowed" : "pointer",
-                  fontWeight: 600, marginTop: "8px", transition: "all 0.3s",
-                  alignSelf: "flex-start", opacity: status === "sending" ? 0.7 : 1,
-                  boxShadow: `0 0 20px ${C.accentGlow}`,
-                }}
-                onMouseEnter={(e) => { if (status !== "sending") { e.target.style.background = C.accentHover; e.target.style.transform = "translateY(-2px)"; } }}
-                onMouseLeave={(e) => { e.target.style.background = C.accent; e.target.style.transform = "translateY(0)"; }}>
-                  {status === "sending" ? "Envoi…" : "Envoyer"}
-                </button>
-              </form>
-            )}
+            <div className="liquid-glass-strong rounded-full w-10 h-10 flex items-center justify-center text-white mb-4">
+              <span className="text-sm font-heading italic">LM</span>
+            </div>
+            <h3 className="text-lg font-heading italic text-white mb-2">À propos</h3>
+            <p className="text-white/50 font-body font-light text-sm leading-relaxed">
+              Photographe basé à Genève, je travaille sur des projets auto, portrait et événements dans la région lémanique. Approche artistique, résultats pro.
+            </p>
           </div>
+          <button
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="liquid-glass-strong rounded-full px-4 py-2 text-xs font-body font-medium text-white flex items-center gap-1.5 w-fit mt-4 hover:bg-white/10 transition-colors"
+          >
+            Travailler ensemble <ArrowUpRight size={12} />
+          </button>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-          {/* Infos */}
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "32px" }}>
-            {[
-              { label: "Email",     value: "lcs.mrt@icloud.com",   href: "mailto:lcs.mrt@icloud.com" },
-              { label: "Instagram", value: "@lucas_mrt.08",         href: "https://instagram.com/lucas_mrt.08" },
-              { label: "Zone",      value: "Nyon · Lausanne · Genève", href: null },
-            ].map((item) => (
-              <div key={item.label} style={{ padding: "20px 24px", background: C.bgCard, borderRadius: "16px", border: `1px solid ${C.borderSub}` }}>
-                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", color: C.textDim, marginBottom: "6px" }}>{item.label}</div>
-                {item.href
-                  ? <a href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer"
-                      style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: C.text, fontWeight: 400, textDecoration: "none", transition: "color 0.3s" }}
-                      onMouseEnter={(e) => (e.target.style.color = C.accent)}
-                      onMouseLeave={(e) => (e.target.style.color = C.text)}>
-                      {item.value}
-                    </a>
-                  : <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: C.text, fontWeight: 400 }}>{item.value}</div>
-                }
-              </div>
+// ─── STATS ────────────────────────────────────────────────────────────────────
+
+function Stats() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
+
+  const stats = [
+    { value: "41+", label: "Photos au portfolio" },
+    { value: "5", label: "Catégories" },
+    { value: "100%", label: "Satisfaction client" },
+    { value: "Genève", label: "Région lémanique" },
+  ];
+
+  return (
+    <section className="relative py-32 overflow-hidden" ref={ref}>
+      {/* HLS video BG (desaturated) */}
+      <HlsVideo
+        src={STATS_VIDEO}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        style={{ filter: "saturate(0) brightness(0.4)" }}
+      />
+      {/* Gradient fades */}
+      <div
+        className="absolute top-0 left-0 right-0 z-0 pointer-events-none"
+        style={{ height: 200, background: "linear-gradient(to bottom, black, transparent)" }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none"
+        style={{ height: 200, background: "linear-gradient(to top, black, transparent)" }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 px-6 lg:px-16 max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="liquid-glass rounded-3xl p-10 md:p-16"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+            {stats.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+              >
+                <div className="text-4xl md:text-5xl lg:text-6xl font-heading italic text-white mb-2">
+                  {s.value}
+                </div>
+                <div className="text-white/50 font-body font-light text-sm">{s.label}</div>
+              </motion.div>
             ))}
           </div>
-        </div>
-      </Section>
+        </motion.div>
+      </div>
     </section>
   );
 }
 
-// ── Footer ────────────────────────────────────────────────
-function Footer() {
+// ─── CONTACT + FOOTER ─────────────────────────────────────────────────────────
+
+function CtaFooter() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
+
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
-    <footer style={{
-      padding: "40px 40px", borderTop: `1px solid ${C.borderSub}`,
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      flexWrap: "wrap", gap: "12px", maxWidth: "1200px", margin: "0 auto",
-    }}>
-      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: C.textDim, letterSpacing: "1px" }}>© 2026 Lucas — Tous droits réservés</span>
-      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: C.textDim, letterSpacing: "1px" }}>Photographe · Région lémanique</span>
-    </footer>
+    <section id="contact" className="relative py-32 overflow-hidden" ref={ref}>
+      {/* HLS video BG */}
+      <HlsVideo
+        src={CTA_VIDEO}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        style={{ filter: "brightness(0.35)" }}
+      />
+      {/* Gradient fades */}
+      <div
+        className="absolute top-0 left-0 right-0 z-0 pointer-events-none"
+        style={{ height: 200, background: "linear-gradient(to bottom, black, transparent)" }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none"
+        style={{ height: 200, background: "linear-gradient(to top, black, transparent)" }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 px-6 lg:px-16 max-w-2xl mx-auto text-center">
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-body font-medium text-white mb-8"
+        >
+          Contact
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-5xl md:text-6xl lg:text-7xl font-heading italic text-white leading-[0.85] mb-6"
+        >
+          On travaille ensemble ?
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-white/50 font-body font-light text-sm mb-12 max-w-sm mx-auto"
+        >
+          Dites-moi ce que vous avez en tête — une séance, un événement, un véhicule.
+          Je reviens rapidement.
+        </motion.p>
+
+        {/* Form */}
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="liquid-glass rounded-3xl p-8 space-y-4 text-left"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Votre nom"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+              className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white font-body text-sm placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
+            />
+            <input
+              type="email"
+              placeholder="Votre email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+              className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white font-body text-sm placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+          <textarea
+            placeholder="Votre message — décrivez votre projet..."
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            required
+            rows={5}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white font-body text-sm placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors resize-none"
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-white/30 text-xs font-body">
+              {status === "success" && "✓ Message envoyé — je reviens vite !"}
+              {status === "error" && "Erreur — réessayez ou écrivez directement."}
+            </span>
+            <button
+              type="submit"
+              disabled={status === "sending" || status === "success"}
+              className="liquid-glass-strong rounded-full px-6 py-3 text-sm font-body font-medium text-white flex items-center gap-2 hover:bg-white/10 transition-colors disabled:opacity-50"
+            >
+              {status === "sending" ? "Envoi..." : "Envoyer"}
+              <Send size={14} />
+            </button>
+          </div>
+        </motion.form>
+
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-body text-white/30"
+        >
+          <span>© 2026 Lucas Maret. Tous droits réservés.</span>
+          <div className="flex items-center gap-6">
+            <a href="mailto:lcs.mrt@icloud.com" className="hover:text-white/60 transition-colors">
+              Email
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">
+              Instagram
+            </a>
+            <span className="text-white/20">Genève, Suisse</span>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
-// ── App ───────────────────────────────────────────────────
-export default function Portfolio() {
-  return (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, overflowX: "hidden" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        ::selection { background: rgba(91,156,240,0.25); color: #e4e8f4; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #08090f; }
-        ::-webkit-scrollbar-thumb { background: rgba(91,156,240,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(91,156,240,0.4); }
-        input::placeholder, textarea::placeholder { color: rgba(228,232,244,0.2); }
-        select option { background: #0e0f1a; color: #e4e8f4; }
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.3; transform: scaleY(1); }
-          50% { opacity: 0.9; transform: scaleY(1.4); }
-        }
-        @media (max-width: 700px) {
-          #contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          section { padding-left: 20px !important; padding-right: 20px !important; padding-top: 80px !important; padding-bottom: 80px !important; }
-          .nav-links { display: none !important; }
-          .burger { display: flex !important; }
-          .mosaic { columns: 2 !important; }
-          footer { padding: 28px 20px !important; flex-direction: column !important; align-items: flex-start !important; }
-        }
-        @media (max-width: 420px) {
-          .mosaic { columns: 1 !important; }
-          h1 { letter-spacing: -1px !important; }
-        }
-      `}</style>
+// ─── APP ─────────────────────────────────────────────────────────────────────
 
+export default function App() {
+  return (
+    <div className="bg-black text-white min-h-screen">
       <Navbar />
       <Hero />
-
-      <div style={{ width: "48px", height: "1px", background: `linear-gradient(to right, transparent, ${C.accent}, transparent)`, margin: "0 auto" }} />
-      <ServicesSection />
-      <div style={{ width: "48px", height: "1px", background: `linear-gradient(to right, transparent, ${C.accent}, transparent)`, margin: "0 auto" }} />
-      <PortfolioSection />
-      <div style={{ width: "48px", height: "1px", background: `linear-gradient(to right, transparent, ${C.accent}, transparent)`, margin: "0 auto" }} />
-      <ContactSection />
-      <Footer />
+      <div className="bg-black">
+        <PortfolioGallery />
+        <ServicesChess />
+        <ServicesGrid />
+        <Stats />
+        <CtaFooter />
+      </div>
     </div>
   );
 }
