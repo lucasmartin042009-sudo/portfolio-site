@@ -92,7 +92,7 @@ const CATEGORIES = [
   { id: "paysage", label: "Paysage" },
 ];
 
-const HERO_PHOTO = "/photos/paysage/_DSC3110.jpg";
+const HERO_PHOTO = "/photos/paysage/_DSC0710.jpg";
 const STATS_VIDEO = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
 const CTA_VIDEO   = "https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8";
 const FORMSPREE_ID = "xpwzgkrb";
@@ -241,24 +241,17 @@ function Hero() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center" style={{ paddingTop: 100 }}>
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        {/* Heading */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 mb-8"
+          className="text-xs font-body font-medium tracking-[4px] uppercase text-white/50 mb-6"
         >
-          <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-body font-semibold">
-            Nouveau
-          </span>
-          <span className="text-white/80 text-xs font-body pr-2">
-            Photographe basé à Genève
-          </span>
-        </motion.div>
-
-        {/* Heading */}
+          Photographe & Vidéaste · Nyon
+        </motion.p>
         <h1 className="text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[0.85] max-w-3xl tracking-[-3px] mb-6">
-          <BlurText text="Capturer l'instant. Révéler l'âme." delay={120} />
+          <BlurText text="Lucas Martin" delay={120} />
         </h1>
 
         {/* Subtext */}
@@ -268,8 +261,8 @@ function Hero() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="text-sm md:text-base text-white/70 font-body font-light leading-relaxed max-w-md mb-10"
         >
-          Auto, portrait, concert, montagne — chaque image raconte quelque chose.
-          Région lémanique : Genève · Lausanne · Nyon.
+          Auto · Portrait · Concert · Montagne
+          <br />Région lémanique : Nyon · Lausanne · Genève
         </motion.p>
 
         {/* CTAs */}
@@ -607,7 +600,7 @@ function ServicesGrid() {
             </div>
             <h3 className="text-lg font-heading italic text-white mb-2">À propos</h3>
             <p className="text-white/50 font-body font-light text-sm leading-relaxed">
-              Photographe basé à Genève, je travaille sur des projets auto, portrait et événements dans la région lémanique. Approche artistique, résultats pro.
+              Photographe basé à Nyon, je travaille sur des projets auto, portrait et événements dans la région lémanique. Approche artistique, résultats pro.
             </p>
           </div>
           <button
@@ -632,7 +625,7 @@ function Stats() {
     { value: "41+", label: "Photos au portfolio" },
     { value: "5", label: "Catégories" },
     { value: "100%", label: "Satisfaction client" },
-    { value: "Genève", label: "Région lémanique" },
+    { value: "Nyon", label: "Région lémanique" },
   ];
 
   return (
@@ -823,7 +816,7 @@ function CtaFooter() {
             <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">
               Instagram
             </a>
-            <span className="text-white/20">Genève, Suisse</span>
+            <span className="text-white/20">Nyon, Suisse</span>
           </div>
         </motion.div>
       </div>
@@ -842,7 +835,6 @@ export default function App() {
         <PortfolioGallery />
         <ServicesChess />
         <ServicesGrid />
-        <Stats />
         <CtaFooter />
       </div>
     </div>
