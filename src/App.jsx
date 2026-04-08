@@ -248,7 +248,7 @@ function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-xs font-body font-medium tracking-[4px] uppercase mb-6" style={{ color: "var(--gold)" }}
+          className="text-xs font-body font-medium tracking-[4px] uppercase mb-6 liquid-glass rounded-full px-4 py-1.5" style={{ color: "var(--gold)", textShadow: "0 1px 8px rgba(0,0,0,0.8)" }}
         >
           Photographe & Vidéaste · Nyon
         </motion.p>
